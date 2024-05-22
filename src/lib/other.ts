@@ -8,9 +8,6 @@ interface Features {
   [key: string]: number[];
 }
 
-const dot = (a: number[], b: number[]) =>
-  a.map((x, i) => a[i] * b[i]).reduce((m, n) => m + n);
-
 export function loadFeatures(folderModel: string): Features {
   /**
    * Function to load features from the database for a given model
@@ -77,8 +74,6 @@ export function cosineSimilarity(a: number[], b: number[]): number {
    */
   const dotProduct = numeric.dot(a, b);
 
-  console.log(dotProduct, "dot");
-
   const normA = Math.sqrt(numeric.sum(numeric.pow(a, 2)));
   const normB = Math.sqrt(numeric.sum(numeric.pow(b, 2)));
   if (normA === 0 || normB === 0) {
@@ -133,7 +128,8 @@ export function distance_f(
 export function getkVoisins(
   featureReq: number[],
   features: Features,
-  distance: string
+  distance: string,
+  k: number
 ): [string, number][] {
   /**
    * Function to identify the k nearest neighbors for a query image
@@ -153,19 +149,44 @@ export function getkVoisins(
 
   // If distance is Correlation, Intersection or Cosine similarity, we want the largest values
   if (["Correlation", "Intersection", "Cosine"].includes(distance)) {
-    return Object.entries(distances).sort((a, b) => b[1] - a[1]);
+    return Object.entries(distances)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, k);
   } else {
     // Sort images by their distance to the query image and return the closest k neighbors
-    return Object.entries(distances).sort((a, b) => a[1] - b[1]);
+    return Object.entries(distances)
+      .sort((a, b) => a[1] - b[1])
+      .slice(0, k);
   }
 }
 
-export function removeUpToChar(str: string, char: string) {
-  const index = str.indexOf(char);
-  if (index === -1) {
-    // If the character is not found, return the original string
-    return str;
+export function getRappelPrecision(
+  voisins: [string, number][],
+  imageName: string
+): {
+  rappels: number[];
+  precision: number[];
+} {
+  /**
+   * Function to calculate the recall and precision values for the k nearest neighbors
+   */
+  const imageClass = Math.floor(Number(imageName.split(".")[0]) / 100);
+
+  const rappels: number[] = [];
+  const precision: number[] = [];
+  let tp = 0;
+  let fp = 0;
+  for (let i = 0; i < voisins.length; i++) {
+    const voisinClass = Math.floor(
+      Number(voisins[i][0].split("/")[2].split(".")[0]) / 100
+    );
+    if (voisinClass === imageClass) {
+      tp++;
+    } else {
+      fp++;
+    }
+    rappels.push(tp / 100);
+    precision.push(tp / (tp + fp));
   }
-  // Return the substring starting from the character after the found one
-  return str.substring(index + 1);
+  return { rappels, precision };
 }
