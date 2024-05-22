@@ -2,10 +2,20 @@ import * as fs from "fs";
 import * as path from "path";
 import cv from "@techstark/opencv-js";
 import numeric from "numeric";
-// Assuming you have opencv.js properly included in your project
 
 interface Features {
   [key: string]: number[];
+}
+
+function loadOpenCV() {
+  /**
+   * Function to load OpenCV.js
+   */
+  return new Promise<void>((resolve) => {
+    cv.onRuntimeInitialized = () => {
+      resolve();
+    };
+  });
 }
 
 export function loadFeatures(folderModel: string): Features {
@@ -82,21 +92,39 @@ export function cosineSimilarity(a: number[], b: number[]): number {
   return Number(dotProduct) / (normA * normB);
 }
 
-export function intersection(a: number[], b: number[]): number {
+export async function intersection(a: number[], b: number[]): Promise<number> {
   /**
    * Function to calculate the intersection between two vectors
    */
+  if (!cv.onRuntimeInitialized) {
+    await loadOpenCV();
+  }
   const histA = cv.matFromArray(1, a.length, cv.CV_32F, a);
   const histB = cv.matFromArray(1, b.length, cv.CV_32F, b);
+  const result = cv.compareHist(histA, histB, cv.HISTCMP_INTERSECT);
 
-  return cv.compareHist(histA, histB, cv.HISTCMP_INTERSECT);
+  return result;
 }
 
-export function distance_f(
+export async function correlation(a: number[], b: number[]): Promise<number> {
+  /**
+   * Function to calculate the correlation between two vectors
+   */
+  if (!cv.onRuntimeInitialized) {
+    await loadOpenCV();
+  }
+  const histA = cv.matFromArray(1, a.length, cv.CV_32F, a);
+  const histB = cv.matFromArray(1, b.length, cv.CV_32F, b);
+  const result = cv.compareHist(histA, histB, cv.HISTCMP_CORREL);
+
+  return result;
+}
+
+export async function distance_f(
   l1: number[],
   l2: number[],
   distanceName: string
-): number {
+): Promise<number> {
   /**
    * Function to calculate the distance between two vectors using a given method
    */
@@ -106,12 +134,10 @@ export function distance_f(
       distance = euclidean(l1, l2);
       break;
     case "Correlation":
-      const histA = cv.matFromArray(1, l1.length, cv.CV_32F, l1);
-      const histB = cv.matFromArray(1, l2.length, cv.CV_32F, l2);
-      distance = cv.compareHist(histA, histB, cv.HISTCMP_CORREL);
+      distance = await correlation(l1, l2);
       break;
     case "Intersection":
-      distance = intersection(l1, l2);
+      distance = await intersection(l1, l2);
       break;
     case "Bhattacharyya":
       distance = bhatta(l1, l2);
@@ -125,12 +151,12 @@ export function distance_f(
   return distance;
 }
 
-export function getkVoisins(
+export async function getkVoisins(
   featureReq: number[],
   features: Features,
   distance: string,
   k: number
-): [string, number][] {
+): Promise<[string, number][]> {
   /**
    * Function to identify the k nearest neighbors for a query image
    *
@@ -138,12 +164,14 @@ export function getkVoisins(
    * @param features - Dictionary of features for all images
    * @param distance - Distance metric to use for comparison
    */
-
+  if (!cv.onRuntimeInitialized) {
+    await loadOpenCV();
+  }
   // Calculate the distances for each image with respect to the query image
   const distances: { [key: string]: number } = {};
   for (const img in features) {
     if (features.hasOwnProperty(img)) {
-      distances[img] = distance_f(featureReq, features[img], distance);
+      distances[img] = await distance_f(featureReq, features[img], distance);
     }
   }
 

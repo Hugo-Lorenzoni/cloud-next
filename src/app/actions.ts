@@ -38,7 +38,7 @@ export async function getSimilarImages(formData: FormData) {
   //   console.log(featureReq);
 
   // const voisins = getkVoisins(featureReq, features, distance, k);
-  const voisins = getkVoisins(featureReq, features, distance, 100);
+  const voisins = await getkVoisins(featureReq, features, distance, 100);
   const kVoisins = voisins.slice(0, k);
   //   console.log(voisins);
   const { rappels, precision } = getRappelPrecision(voisins, imageData.name);

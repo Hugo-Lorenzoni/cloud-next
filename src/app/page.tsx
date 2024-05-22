@@ -146,7 +146,7 @@ export default function Home() {
                     <img
                       src={currentImage}
                       alt="image de recherche"
-                      className="rounded-xl shadow-lg w-full"
+                      className="rounded-xl shadow-lg"
                     />
                   ) : (
                     <img
@@ -289,7 +289,7 @@ export default function Home() {
         {data && data.rappelPrecision && (
           <>
             <h3 className="mt-8 font-semibold text-lg text-center">
-              Courbe du rappel en fonction de la précision
+              Courbe de la précision en fonction du rappel
             </h3>
             <LineChart
               className=" text-sm"
