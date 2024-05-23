@@ -12,7 +12,7 @@ export default function Nav() {
             </a>
           </li>
           <li>
-            <a href="/info">Infos sur l'équipe</a>
+            <a href="/infos">Infos sur l&apos;équipe</a>
           </li>
         </ul>
       </nav>

@@ -249,7 +249,7 @@ export default function Home() {
                 name="k"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nombre d'élément proche</FormLabel>
+                    <FormLabel>Nombre d&apos;élément proche</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -317,9 +317,8 @@ export default function Home() {
           <h2 className="font-semibold text-lg">Images similaires</h2>
           <div className="grid grid-flow-row-dense grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 2xl:grid-cols-3 gap-2">
             {data.voisins.map((image, index) => (
-              <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center" key={index}>
                 <img
-                  key={index}
                   src={removeUpToChar(image[0], "/")}
                   alt={`${image[0]}`}
                   className="rounded-xl shadow-lg w-full"

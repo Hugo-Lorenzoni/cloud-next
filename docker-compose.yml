@@ -1,0 +1,8 @@
+services:
+  app:
+    build: .
+    name: hugolorenzoni/thecloudproject
+    container_name: cloud-next-docker
+    restart: unless-stopped
+    ports:
+      - 3000:3000

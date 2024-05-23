@@ -1,5 +1,5 @@
 import "../globals.css";
-import "./InfoPage.css"; // Import the new CSS file
+import "./InfosPage.css"; // Import the new CSS file
 
 interface TeamMember {
   name: string;
@@ -20,14 +20,14 @@ const teamMembers: TeamMember[] = [
   },
 ];
 
-const InfoPage = () => {
+const InfosPage = () => {
   return (
     <>
       <div className="info-container">
         <h1>Présentation du Projet : Cloud & Edge Computing 2023-2024</h1>
         <p>
           Bienvenue à notre projet pour le cours de Cloud & Edge Computing
-          2023-2024, dirigé par Sidi Mahmoudi. Ce projet s'appuie sur les
+          2023-2024, dirigé par Sidi Mahmoudi. Ce projet s&apos;appuie sur les
           compétences acquises lors des cours et des travaux pratiques du
           module.
         </p>
@@ -36,18 +36,18 @@ const InfoPage = () => {
         <h1>Objectif du projet</h1>
         <p>
           Le projet a pour but de développer et héberger une application
-          d'indexation et de recherche multimédia en utilisant des ressources
-          Cloud ou Edge.
+          d&apos;indexation et de recherche multimédia en utilisant des
+          ressources Cloud ou Edge.
         </p>
         <p>
           Notre application permet de rechercher des images similaires à partir
-          d'une image de référence. Pour ce faire, nous devons extraire des
+          d&apos;une image de référence. Pour ce faire, nous devons extraire des
           caractéristiques des images et les comparer pour trouver les images
           les plus proches.
         </p>
         <p>
-          Cette application est capable de gérer un grand nombre d'images et de
-          fournir des résultats de recherche en temps réel.
+          Cette application est capable de gérer un grand nombre d&apos;images
+          et de fournir des résultats de recherche en temps réel.
         </p>
         <p>
           De plus, notre application est accessible via une interface Web simple
@@ -74,4 +74,4 @@ const InfoPage = () => {
   );
 };
 
-export default InfoPage;
+export default InfosPage;
