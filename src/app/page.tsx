@@ -289,7 +289,7 @@ export default function Home() {
         {data && data.rappelPrecision && (
           <>
             <h3 className="mt-8 font-semibold text-lg text-center">
-              Courbe de la précision en fonction du rappel
+              Courbe rappel-précision
             </h3>
             <LineChart
               className=" text-sm"

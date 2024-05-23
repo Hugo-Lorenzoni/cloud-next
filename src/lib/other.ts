@@ -34,8 +34,8 @@ export function loadFeatures(folderModel: string): Features {
       .map((line) => parseFloat(line.trim()));
     // retirer le dernier élément qui est une chaine vide
     data.pop();
-    features[`public/image/${path.basename(file, path.extname(file))}.jpg`] =
-      numeric.clone(data);
+    features[`public/images/${path.basename(file, path.extname(file))}.jpg`] =
+      data;
   });
 
   return features;
@@ -50,7 +50,7 @@ export function extractReqFeatures(
    * Assumption: all request images belong to the database
    */
   const file = path.basename(fileName);
-  return features[`public/image/${file}`];
+  return features[`public/images/${file}`];
 }
 
 export function euclidean(l1: number[], l2: number[]): number {

@@ -1,0 +1,43 @@
+.info-container {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 20px;
+}
+
+.info-container h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.info-container p {
+  margin-bottom: 10px;
+}
+
+.team-container {
+  display: flex;
+  justify-content: center;
+}
+
+.team-member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 65px; /* Ajuster les marges autour de chaque membre */
+}
+
+.team-member img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.team-member strong {
+  display: block;
+  margin-top: 10px;
+}
