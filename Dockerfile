@@ -1,16 +1,21 @@
-FROM node:20-alpine
+FROM node:20-alpine AS base
 
-RUN apk add --no-cache libc6-compat
+FROM base AS deps
+
 WORKDIR /app
 
-COPY . .
-
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
   elif [ -f package-lock.json ]; then npm ci; \
   elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
   else echo "Lockfile not found." && exit 1; \
   fi
+
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
@@ -19,12 +24,23 @@ RUN \
   else echo "Lockfile not found." && exit 1; \
   fi
 
+FROM base AS runner
+WORKDIR /app
+
 ENV NODE_ENV production
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder --chown=nextjs:nodejs /app/package.json .
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+
+USER nextjs
 
 EXPOSE 3000
 
 ENV PORT 3000
 
-# server.js is created by next build from the standalone output
-# https://nextjs.org/docs/pages/api-reference/next-config-js/output
 CMD ["npm", "start"]
