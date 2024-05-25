@@ -25,7 +25,7 @@ const teamMembers: TeamMember[] = [
 
 const InfosPage = () => {
   return (
-    <>
+    <main>
       <div className="info-container">
         <h1>Présentation du Projet : Cloud & Edge Computing 2023-2024</h1>
         <p>
@@ -75,7 +75,7 @@ const InfosPage = () => {
         </div>
       </div>
       <div style={{ marginBottom: "20px" }}></div>
-    </>
+    </main>
   );
 };
 

@@ -128,7 +128,7 @@ export default function Home() {
     server_getSimilarImages(formData);
   }
   return (
-    <main className="grid grid-cols-1 lg:grid-cols-2 px-4 sm:px-8 lg:px-24 gap-12">
+    <main className="grid grid-cols-1 lg:grid-cols-2 px-4 sm:px-8 lg:px-24 gap-12 min-h-screen">
       <section className="lg:sticky h-fit top-8">
         <Form {...form}>
           <form
