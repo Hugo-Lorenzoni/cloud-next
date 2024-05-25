@@ -147,7 +147,7 @@ export default function Home() {
     server_getSimilarImages(formData);
   }
   return (
-    <main className="grid grid-cols-1 lg:grid-cols-2 px-4 sm:px-8 lg:px-24 gap-12 min-h-screen">
+    <main className="grid grid-cols-1 lg:grid-cols-2 px-4 sm:px-8 lg:px-24 gap-12 min-h-screen mt-8">
       <section className="lg:sticky h-fit top-8">
         <Form {...form}>
           <form
@@ -195,7 +195,7 @@ export default function Home() {
                       <DialogTrigger asChild>
                         <Button variant="outline">Choisir une image</Button>
                       </DialogTrigger>
-                      <DialogContent className="h-3/4 max-w-[75%]">
+                      <DialogContent className="h-3/4 max-w-[75%] rounded-lg">
                         <DialogHeader>
                           <DialogTitle>Choisir une image</DialogTitle>
                           <DialogDescription>
@@ -203,7 +203,7 @@ export default function Home() {
                             semblables.
                           </DialogDescription>
                         </DialogHeader>
-                        <div className="grid grid-cols-4 gap-2 overflow-y-scroll p-2">
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 overflow-y-scroll p-2">
                           {Array.from({ length: 1000 }, (_, i) => {
                             // get the size of the image
                             return (

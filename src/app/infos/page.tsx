@@ -25,7 +25,7 @@ const teamMembers: TeamMember[] = [
 
 const InfosPage = () => {
   return (
-    <main>
+    <main className="px-4">
       <div className="info-container">
         <h1>Présentation du Projet : Cloud & Edge Computing 2023-2024</h1>
         <p>

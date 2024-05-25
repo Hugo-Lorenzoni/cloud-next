@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className="mt-4 bg-slate-950 text-white sticky top-0 sm:relative">
       <div className="px-4 sm:px-6 lg:px-20 py-6">
-        <ul className="flex justify-between flex-wrap">
+        <ul className="flex justify-between flex-wrap gap-x-4 items-center">
           <li>
             <a href="/" className="flex text-xl gap-1 font-semibold">
               - The Cloud Project{" "}
