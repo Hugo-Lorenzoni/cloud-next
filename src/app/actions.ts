@@ -8,18 +8,20 @@ import {
 } from "@/lib/other";
 
 export async function getSimilarImages(formData: FormData) {
-  const imageData = formData.get("image");
+  const imageData = formData.get("image")?.toString();
 
   const model = formData.get("model")?.toString();
   const distance = formData.get("distance")?.toString();
   const kData = formData.get("k")?.toString();
 
+  // console.log(imageData, model, distance, kData);
+
   if (
     !model ||
     !distance ||
     !imageData ||
-    !(imageData instanceof File) ||
-    imageData.size === 0 ||
+    // !(imageData instanceof File) ||
+    // imageData.size === 0 ||
     !kData
   ) {
     console.log("Invalid input");
@@ -34,14 +36,14 @@ export async function getSimilarImages(formData: FormData) {
   //   console.log(imageData, model, distance);
   const features = loadFeatures(model);
   //   console.log(features);
-  const featureReq = extractReqFeatures(imageData.name, features);
+  const featureReq = extractReqFeatures(imageData, features);
   //   console.log(featureReq);
 
   // const voisins = getkVoisins(featureReq, features, distance, k);
   const voisins = await getkVoisins(featureReq, features, distance, 100);
   const kVoisins = voisins.slice(0, k);
   //   console.log(voisins);
-  const { rappels, precision } = getRappelPrecision(voisins, imageData.name);
+  const { rappels, precision } = getRappelPrecision(voisins, imageData);
   // console.log(rappels, precision);
 
   const rappelPrecision = rappels.map((rappel, index) => ({

@@ -13,13 +13,21 @@ import {
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+// import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
 import { getSimilarImages } from "./actions";
 import { z } from "zod";
@@ -28,14 +36,17 @@ import { useForm } from "react-hook-form";
 import { LoaderCircle, ScanSearch } from "lucide-react";
 import { ComponentType, useState } from "react";
 import { CustomTooltipProps, LineChart } from "@tremor/react";
+import { cn } from "@/lib/utils";
 
-const MAX_FILE_SIZE = 10000000;
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
+// const MAX_FILE_SIZE = 10000000;
+// const ACCEPTED_IMAGE_TYPES = [
+//   "image/jpeg",
+//   "image/jpg",
+//   "image/png",
+//   "image/webp",
+// ];
+
+const regex = /^(?:[0-9]|[1-9][0-9]|[1-9][0-9]{2})\.jpg$/;
 
 const models = [
   "InceptionV3",
@@ -54,13 +65,19 @@ const distances = [
 ] as const;
 
 const formSchema = z.object({
+  // image: z
+  //   .custom<File>((v) => v instanceof File)
+  //   .refine(
+  //     (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+  //     ".jpg, .jpeg, .png and .webp files are accepted."
+  //   )
+  //   .refine((file) => file?.size <= MAX_FILE_SIZE, `Max file size is 10MB.`),
   image: z
-    .custom<File>((v) => v instanceof File)
+    .string()
     .refine(
-      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-      ".jpg, .jpeg, .png and .webp files are accepted."
-    )
-    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max file size is 10MB.`),
+      (name) => regex.test(name),
+      "Seulement les images de cette sélections sont acceptées."
+    ),
   model: z.enum(models),
   distance: z.enum(distances),
   k: z.enum(["20", "50"]),
@@ -120,6 +137,8 @@ export default function Home() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const { image, model, distance, k } = values;
+    console.log(image);
+
     const formData = new FormData();
     formData.append("image", image);
     formData.append("model", model);
@@ -157,7 +176,7 @@ export default function Home() {
                   )}
 
                   <FormControl>
-                    <Input
+                    {/* <Input
                       {...fieldsProps}
                       placeholder="Choisir une image"
                       className="file:border-1 mt-2 flex h-fit cursor-pointer items-center file:cursor-pointer  file:rounded-md"
@@ -171,7 +190,54 @@ export default function Home() {
                               )
                             : setCurrentImage(null);
                       }}
-                    />
+                    /> */}
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline">Choisir une image</Button>
+                      </DialogTrigger>
+                      <DialogContent className="h-3/4 max-w-[75%]">
+                        <DialogHeader>
+                          <DialogTitle>Choisir une image</DialogTitle>
+                          <DialogDescription>
+                            Image dont on recherche les images les plus
+                            semblables.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid grid-cols-4 gap-2 overflow-y-scroll p-2">
+                          {Array.from({ length: 1000 }, (_, i) => {
+                            // get the size of the image
+                            return (
+                              <img
+                                {...fieldsProps}
+                                key={i}
+                                src={`/images/${i}.jpg`}
+                                alt={`Image ${i}`}
+                                className={cn(
+                                  "rounded-xl shadow-lg self-center cursor-pointer",
+                                  currentImage === `/images/${i}.jpg`
+                                    ? "outline outline-4 outline-blue-500"
+                                    : ""
+                                )}
+                                onClick={() => {
+                                  setCurrentImage(`/images/${i}.jpg`);
+                                  onChange(`${i}.jpg`);
+                                }}
+                              />
+                            );
+                          })}
+                        </div>
+                        <DialogFooter>
+                          <DialogClose asChild>
+                            <Button
+                              type="button"
+                              variant={currentImage ? "default" : "secondary"}
+                            >
+                              Comfirmer
+                            </Button>
+                          </DialogClose>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                   </FormControl>
                   <FormDescription>
                     Image dont on recherche les images les plus semblables.
