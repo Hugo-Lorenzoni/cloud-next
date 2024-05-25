@@ -1,21 +1,10 @@
 import * as fs from "fs";
 import * as path from "path";
-import cv from "@techstark/opencv-js";
 import numeric from "numeric";
+import { correlation, intersection } from "./opencv";
 
 interface Features {
   [key: string]: number[];
-}
-
-function loadOpenCV() {
-  /**
-   * Function to load OpenCV.js
-   */
-  return new Promise<void>((resolve) => {
-    cv.onRuntimeInitialized = () => {
-      resolve();
-    };
-  });
 }
 
 export function loadFeatures(folderModel: string): Features {
@@ -92,35 +81,7 @@ export function cosineSimilarity(a: number[], b: number[]): number {
   return Number(dotProduct) / (normA * normB);
 }
 
-export async function intersection(a: number[], b: number[]): Promise<number> {
-  /**
-   * Function to calculate the intersection between two vectors
-   */
-  if (!cv.onRuntimeInitialized) {
-    await loadOpenCV();
-  }
-  const histA = cv.matFromArray(1, a.length, cv.CV_32F, a);
-  const histB = cv.matFromArray(1, b.length, cv.CV_32F, b);
-  const result = cv.compareHist(histA, histB, cv.HISTCMP_INTERSECT);
-
-  return result;
-}
-
-export async function correlation(a: number[], b: number[]): Promise<number> {
-  /**
-   * Function to calculate the correlation between two vectors
-   */
-  if (!cv.onRuntimeInitialized) {
-    await loadOpenCV();
-  }
-  const histA = cv.matFromArray(1, a.length, cv.CV_32F, a);
-  const histB = cv.matFromArray(1, b.length, cv.CV_32F, b);
-  const result = cv.compareHist(histA, histB, cv.HISTCMP_CORREL);
-
-  return result;
-}
-
-export async function distance_f(
+export async function getDistance(
   l1: number[],
   l2: number[],
   distanceName: string
@@ -164,14 +125,14 @@ export async function getkVoisins(
    * @param features - Dictionary of features for all images
    * @param distance - Distance metric to use for comparison
    */
-  if (!cv.onRuntimeInitialized) {
-    await loadOpenCV();
-  }
+
+  // await loadOpenCV();
+
   // Calculate the distances for each image with respect to the query image
   const distances: { [key: string]: number } = {};
   for (const img in features) {
     if (features.hasOwnProperty(img)) {
-      distances[img] = await distance_f(featureReq, features[img], distance);
+      distances[img] = await getDistance(featureReq, features[img], distance);
     }
   }
 
