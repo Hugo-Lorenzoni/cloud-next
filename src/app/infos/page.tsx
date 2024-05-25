@@ -1,22 +1,25 @@
+import Image, { StaticImageData } from "next/image";
 import "../globals.css";
 import "./InfosPage.css"; // Import the new CSS file
+import Rodrigue from "../../../public/photos/rodrigue.jpg";
+import Hugo from "../../../public/photos/hugo.jpg";
 
 interface TeamMember {
   name: string;
   role: string;
-  photo: string;
+  photo: StaticImageData;
 }
 
 const teamMembers: TeamMember[] = [
   {
     name: "Rodrigue Deghorain",
-    role: "Developper",
-    photo: "/photos/rodrigue.jpg",
+    role: "Developer",
+    photo: Rodrigue,
   },
   {
     name: "Hugo Lorenzoni",
     role: "Developer",
-    photo: "/photos/hugo.jpg",
+    photo: Hugo,
   },
 ];
 
@@ -56,14 +59,16 @@ const InfosPage = () => {
       </div>
       <div className="info-container">
         <h1>Équipe</h1>
-        <div className="team-container">
+        <div className="flex flex-wrap justify-evenly gap-4">
           {teamMembers.map((member, index) => (
             <div key={index} className="team-member">
-              <img
-                className="[overflow-clip-margin:unset]"
-                src={member.photo}
-                alt={member.name}
-              />
+              <div className=" aspect-square">
+                <Image
+                  className="[overflow-clip-margin:unset]"
+                  src={member.photo}
+                  alt={member.name}
+                />
+              </div>
               <strong>{member.name}</strong> - {member.role}
             </div>
           ))}
