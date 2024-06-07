@@ -7,50 +7,49 @@ import {
   loadFeatures,
 } from "@/lib/other";
 
+/**
+ * Retrieves similar images based on the provided form data.
+ * @param formData - The form data containing the image, model, distance, and k value.
+ * @returns An object containing the k nearest neighbors and the recall-precision values.
+ */
 export async function getSimilarImages(formData: FormData) {
+  // Extract form data
   const imageData = formData.get("image")?.toString();
-
   const model = formData.get("model")?.toString();
   const distance = formData.get("distance")?.toString();
   const kData = formData.get("k")?.toString();
 
-  // console.log(imageData, model, distance, kData);
-
-  if (
-    !model ||
-    !distance ||
-    !imageData ||
-    // !(imageData instanceof File) ||
-    // imageData.size === 0 ||
-    !kData
-  ) {
+  // Check for invalid input
+  if (!model || !distance || !imageData || !kData) {
     console.log("Invalid input");
-
     return;
   }
+
+  // Parse k value
   const k = parseInt(kData);
   if (k !== 20 && k !== 50) {
     console.log("Invalid k value");
     return;
   }
-  //   console.log(imageData, model, distance);
-  const features = loadFeatures(model);
-  //   console.log(features);
-  const featureReq = extractReqFeatures(imageData, features);
-  //   console.log(featureReq);
 
-  // const voisins = getkVoisins(featureReq, features, distance, k);
+  // Load features
+  const features = loadFeatures(model);
+
+  // Extract required features from image data
+  const featureReq = extractReqFeatures(imageData, features);
+
+  // Get k nearest neighbors
   const voisins = await getkVoisins(featureReq, features, distance, 100);
   const kVoisins = voisins.slice(0, k);
-  //   console.log(voisins);
-  const { rappels, precision } = getRappelPrecision(voisins, imageData);
-  // console.log(rappels, precision);
 
+  // Calculate recall-precision values
+  const { rappels, precision } = getRappelPrecision(voisins, imageData);
+
+  // Format recall-precision values
   const rappelPrecision = rappels.map((rappel, index) => ({
     Rappel: rappel,
     Precision: precision[index],
   }));
-  // console.log(rappelPrecision);
 
   return { voisins: kVoisins, rappelPrecision };
 }
