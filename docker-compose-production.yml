@@ -1,0 +1,16 @@
+services:
+  app:
+    image: hugolorenzoni/thecloudproject:final
+    container_name: cloud-next-docker
+    restart: unless-stopped
+
+  reverse-proxy:
+    image: jc21/nginx-proxy-manager:latest
+    restart: unless-stopped
+    ports:
+      - 80:80
+      # - 81:81 # for initial setup only
+      - 443:443
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
